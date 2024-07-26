@@ -124,3 +124,31 @@ button:active {
 header > div {
   margin: 0 1rem;
 }
+
+/* friend requests stuff */
+
+.friend-requests {
+  margin-top: 20px;
+}
+
+.friend-requests ul {
+  list-style: none;
+  padding: 0;
+}
+
+.friend-requests li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.friend-requests img {
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+
+.friend-requests button {
+  margin-left: 10px;
+}

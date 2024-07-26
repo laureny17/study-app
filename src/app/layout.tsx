@@ -32,6 +32,9 @@ export default function RootLayout({
               <Link href="/profile" className="navbar-link">
                 Profile
               </Link>
+              <Link href="/friends" className="navbar-link">
+                Friends
+              </Link>
             </div>
             <nav className="navbar-right">
               <SignedOut>
