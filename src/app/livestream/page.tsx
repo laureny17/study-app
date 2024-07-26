@@ -1,31 +1,53 @@
-// src/app/livestream/page.tsx
 "use client";
-import { useState } from "react";
-import Timer from "../components/Timer";
-import Modal from "../components/Modal";
-import Link from "next/link";
 
-const Livestream: React.FC = () => {
-  const [initialTime, setInitialTime] = useState<number>(0);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(true);
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
-  const handleSave = (hours: number, minutes: number) => {
-    const totalSeconds = hours * 3600 + minutes * 60;
-    setInitialTime(totalSeconds);
-    setIsModalOpen(false); // Close the modal after saving the time
-  };
+const Livestream = () => {
+  const searchParams = useSearchParams();
+  const duration = searchParams.get("duration");
+
+  const [timeLeft, setTimeLeft] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (typeof duration === "string") {
+      const parsedDuration = parseInt(duration, 10);
+      if (!isNaN(parsedDuration)) {
+        setTimeLeft(parsedDuration * 60); // Convert minutes to seconds
+      }
+    }
+  }, [duration]);
+
+  useEffect(() => {
+    if (timeLeft === null) return;
+
+    const intervalId = setInterval(() => {
+      setTimeLeft((prevTimeLeft) => {
+        if (prevTimeLeft === null) return null;
+        if (prevTimeLeft <= 1) {
+          clearInterval(intervalId);
+          return 0;
+        }
+        return prevTimeLeft - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [timeLeft]);
+
+  if (timeLeft === null) {
+    return <div>Loading...</div>;
+  }
+
+  const minutes = Math.floor(timeLeft / 60);
+  const seconds = timeLeft % 60;
 
   return (
-    <div className="container">
-      {initialTime > 0 && <Timer initialTime={initialTime} />}
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSave={handleSave}
-      />
-      <Link href="/">
-        <button>Back to Home</button>
-      </Link>
+    <div>
+      <h1>Livestream Timer</h1>
+      <p>
+        Time Left: {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
+      </p>
     </div>
   );
 };
